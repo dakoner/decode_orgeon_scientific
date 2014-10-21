@@ -44,36 +44,47 @@ format = Format('wav')
 f = Sndfile(filename, 'r')
 y = f.read_frames(f.nframes)
 x = numpy.arange(0, len(y))
-print len(x), len(y)
 signs = numpy.array(y > 0.05, int)
 differences = numpy.diff(signs)
 changes = numpy.nonzero(differences)[0]
-change_y = numpy.zeros(len(changes))
 clock = numpy.mean(numpy.diff(changes[1:24]))
 print clock
-i = 0
-cl = []
-c = changes[i]
-while True:
-    cl.append([[c, 0], [c, 1]])
-    cl.append([[c, 1], [c+clock, 1]])
-    cl.append([[c+clock, 1], [c+clock, 0]])
-    cl.append([[c+clock, 0], [c+clock*2, 0]])
-    c += clock*2
-    if c > len(y):
-        break
-f, ax = plt.subplots()
+
+
+# f, ax = plt.subplots()
+# ax.plot(x, y, '-')
 
 # cl = numpy.zeros((len(changes), 2, 2))
 # for i in range(len(changes)):
 #     cl[i] = [[changes[i], 0], [changes[i], 1]]
-lc = collections.LineCollection(cl)
-ax.add_collection(lc)
-ax.plot(x, y, '-')
 #ax.plot(x, signs, '-')
 # ax.plt(x[:-1], differences, '-')
-# ax.scatter(changes, change_y)
-ax.autoscale()
-plt.show()
+# ax.scatter(changes, numpy.zeros(len(changes)))
+
+i = 0
+cl = []
+c = changes[1]-clock*2
+bitvalues = []
+while True:
+    v = y[c+clock:c+clock*2]
+    if len(v):
+        if numpy.mean(v) > 0.05:
+            bitvalues.append(1)
+        else:
+            bitvalues.append(0)
+    # cl.append([[c, 0], [c+clock, 0]])
+    # cl.append([[c+clock, 0], [c+clock, 1]])
+    # cl.append([[c+clock, 1], [c+clock*2, 1]])
+    # cl.append([[c+clock*2, 1], [c+clock*2, 0]])
+    c += clock*2
+    if c > len(y):
+        break
+
+print bitvalues
+# lc = collections.LineCollection(cl)
+# ax.add_collection(lc)
+# ax.autoscale()
+# plt.show()
+
 
 
