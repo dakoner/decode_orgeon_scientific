@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import collections
 import rtlsdr
 from scikits.audiolab import Format, Sndfile
-from scikits.samplerate import resample
-
-
+#from scikits.samplerate import resample
 
 
 # sdr = rtlsdr.RtlSdr()
@@ -41,7 +39,7 @@ from scikits.samplerate import resample
 # y = sdr.read_samples(1024000)
 
 
-filename = "trim.wav"
+filename = 'trim.wav'
 format = Format('wav')
 f = Sndfile(filename, 'r')
 y = f.read_frames(f.nframes)
@@ -52,8 +50,8 @@ changes = numpy.nonzero(differences)[0]
 changes_delta_t = numpy.diff(changes)
 changes_long = numpy.where(changes_delta_t > 30, 0, 1)
 print changes_long
-clock = numpy.mean(numpy.diff(changes[1:24]))
-print clock
+halfclock = numpy.mean(numpy.diff(changes[1:24]))
+print halfclock
 
 
 f, ax = plt.subplots()
@@ -68,36 +66,31 @@ ax.scatter(changes, numpy.zeros(len(changes)))
 
 i = 0
 cl = []
-c = changes[1]-clock*2+clock/2
+c = changes[1] - halfclock * 2 - halfclock / 2
 bitvalues = []
 while True:
-    v = y[round(c+clock)]
-    print y[round(c+clock)]
-    bitvalues.append(bool(v > 0.05))
-    # v = y[c+clock:c+clock*2]
-    # if len(v):
-    #     if numpy.mean(v) > 0.05:
-    #         bitvalues.append(1)
-    #     else:
-    #         bitvalues.append(0)
-    cl.append([[c, 0], [c+clock, 0]])
-    cl.append([[c+clock, 0], [c+clock, 0.07]])
-    cl.append([[c+clock, 0.07], [c+clock*2, 0.07]])
-    cl.append([[c+clock*2, 0.07], [c+clock*2, 0]])
-    c += clock*2
-    if c+clock > len(y):
-        break
+  print c
+  v = y[round(c + halfclock * 2)]
+  print y[round(c + halfclock * 2)]
+  bitvalues.append(bool(v > 0.05))
+  cl.append([[c, 0], [c + halfclock, 0]])
+  cl.append([[c + halfclock, 0], [c + halfclock, 0.07]])
+  cl.append([[c + halfclock, 0.07], [c + halfclock * 2, 0.07]])
+  cl.append([[c + halfclock * 2, 0.07], [c + halfclock * 2, 0]])
+  c += halfclock * 2
+  if c + halfclock * 2 > len(y):
+    break
 
 s = []
 for b in bitvalues:
-    if b:
-        s.append(1)
-    else:
-        s.append(0)
+  if b:
+    s.append(1)
+  else:
+    s.append(0)
 
 print ''.join(map(str, s))
 
 lc = collections.LineCollection(cl)
 ax.add_collection(lc)
 ax.autoscale()
-plt.show()
+# plt.show()
