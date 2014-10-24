@@ -2,6 +2,13 @@ import numpy
 from scikits.audiolab import Format, Sndfile
 
 
+def logic_to_nibble(data):
+  logic = {True: '1',
+           False: '0'}
+  nibble = int(''.join(map(lambda x: logic[x], data[0:4][::-1])), 2)
+  print data, ''.join(map(lambda x: logic[x], data[0:4][::-1]))
+  return nibble
+
 filename = 'trim.wav'
 format = Format('wav')
 f = Sndfile(filename, 'r')
@@ -47,13 +54,13 @@ logic = {True: '1',
          False: '0'}
 sensor = []
 print ''.join(map(lambda x: logic[x], payload[0:4][::-1]))
-nibble = int(''.join(map(lambda x: logic[x], payload[0:4][::-1])), 2)
+nibble = logic_to_nibble(payload[0:4][::-1])
 sensor.append(nibble)
-nibble = int(''.join(map(lambda x: logic[x], payload[4:8][::-1])), 2)
+nibble = logic_to_nibble(payload[4:8][::-1])
 sensor.append(nibble)
-nibble = int(''.join(map(lambda x: logic[x], payload[8:12][::-1])), 2)
+nibble = logic_to_nibble(payload[8:12][::-1])
 sensor.append(nibble)
-nibble = int(''.join(map(lambda x: logic[x], payload[12:16][::-1])), 2)
+nibble = logic_to_nibble(payload[12:16][::-1])
 sensor.append(nibble)
 print sensor
 # print hex(val)
