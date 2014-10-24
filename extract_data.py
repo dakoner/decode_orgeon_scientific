@@ -5,8 +5,8 @@ from scikits.audiolab import Format, Sndfile
 def logic_to_nibble(data):
   logic = {True: '1',
            False: '0'}
-  nibble = int(''.join(map(lambda x: logic[x], data[0:4][::-1])), 2)
-  print data, ''.join(map(lambda x: logic[x], data[0:4][::-1]))
+  nibble = int(''.join(map(lambda x: logic[x], data[0:4])), 2)
+  print data, ''.join(map(lambda x: logic[x], data[0:4]))
   return nibble
 
 filename = 'trim.wav'
