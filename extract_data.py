@@ -41,5 +41,20 @@ assert bitvalues[:24] == [
 
 assert bitvalues[24:28] == [False, True, False, True]
 payload = bitvalues[28:]
+val = 0
 print payload[:16]
+logic = {True: '1',
+         False: '0'}
+sensor = []
+print ''.join(map(lambda x: logic[x], payload[0:4][::-1]))
+nibble = int(''.join(map(lambda x: logic[x], payload[0:4][::-1])), 2)
+sensor.append(nibble)
+nibble = int(''.join(map(lambda x: logic[x], payload[4:8][::-1])), 2)
+sensor.append(nibble)
+nibble = int(''.join(map(lambda x: logic[x], payload[8:12][::-1])), 2)
+sensor.append(nibble)
+nibble = int(''.join(map(lambda x: logic[x], payload[12:16][::-1])), 2)
+sensor.append(nibble)
+print sensor
+# print hex(val)
 print ''.join(map(str, s))
